@@ -1,0 +1,96 @@
+# ===================================================================
+# Configuration Application - Dual Datasource MySQL
+# ===================================================================
+
+spring:
+  # -----------------------------------------------------------------
+  # Configuration des deux DataSources MySQL
+  # -----------------------------------------------------------------
+  datasource:
+    # --- DataSource 1 : Base OPERATIONNELLE ---
+    operational:
+      url: jdbc:mysql://localhost:3306/event_management?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      username: root
+      password: 321root
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      # Pool HikariCP
+      hikari:
+        pool-name: OperationalHikariPool
+        minimum-idle: 5
+        maximum-pool-size: 20
+        idle-timeout: 300000
+        max-lifetime: 1200000
+        connection-timeout: 20000
+        auto-commit: false
+
+    # --- DataSource 2 : Base ARCHIVE ---
+    archive:
+      url: jdbc:mysql://localhost:3306/event_management_archive?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      username: root
+      password: 321root
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      # Pool HikariCP
+      hikari:
+        pool-name: ArchiveHikariPool
+        minimum-idle: 3
+        maximum-pool-size: 10
+        idle-timeout: 300000
+        max-lifetime: 1200000
+        connection-timeout: 20000
+        auto-commit: false
+
+  # -----------------------------------------------------------------
+  # JPA - Configuration commune (surchargee par classe de config)
+  # -----------------------------------------------------------------
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+    show-sql: true
+
+  # -----------------------------------------------------------------
+  # Spring Batch
+  # -----------------------------------------------------------------
+  batch:
+    jdbc:
+      initialize-schema: always
+    job:
+      enabled: false  # Desactive le lancement auto des jobs
+
+  # -----------------------------------------------------------------
+  # SQL Initialization
+  # -----------------------------------------------------------------
+  sql:
+    init:
+      mode: never  # On laisse Hibernate gerer le schema
+
+# ===================================================================
+# Configuration Serveur
+# ===================================================================
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+
+# ===================================================================
+# Actuator
+# ===================================================================
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
+
+# ===================================================================
+# Logging
+# ===================================================================
+logging:
+  level:
+    com.example.dualdatasource: DEBUG
+    org.springframework.batch: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
