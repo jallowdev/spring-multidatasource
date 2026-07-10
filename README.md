@@ -117,9 +117,9 @@ src/main/java/com/tdsi/spring_multidatasource/
 └── service/             # Logique métier orchestrant les 2 bases
 ```
 
-## Acknowledgements
+## Liens
 
-- [Awesome Readme Templates](https://awesomeopensource.com/project/elangosundar/awesome-README-templates)
+- [Son utilisation pour spring batch](https://github.com/jallowdev/spring-batch-event)
 
 ## Auteur
 
